@@ -1,0 +1,647 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Lydia, My Forever Cousin 💖</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@400;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@400;700&family=Lora:wght@400;500;600;700&display=swap');
+       
+        :root {
+            --tw-color-romantic: #7e22ce;
+        }
+       
+        * {
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+       
+        body {
+            font-family: 'Lora', serif;
+            color: #f472b6;
+        }
+       
+        h1, h2, h3, h4, h5, h6, .heading-font {
+            font-family: 'Playfair Display', serif;
+        }
+       
+        .signature-font {
+            font-family: 'Dancing Script', cursive;
+        }
+       
+        @keyframes floatHeart {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+       
+        @keyframes floatPetal {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(-360deg); opacity: 0; }
+        }
+       
+        .floating-heart {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: floatHeart 18s linear infinite;
+            z-index: 10;
+            pointer-events: none;
+            filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.6));
+        }
+       
+        .floating-petal {
+            position: absolute;
+            font-size: 1.8rem;
+            animation: floatPetal 22s linear infinite;
+            z-index: 10;
+            pointer-events: none;
+            filter: drop-shadow(0 0 8px rgba(147, 51, 234, 0.5));
+        }
+       
+        .hero-bg {
+            background: linear-gradient(135deg, #2e1065 0%, #4c1d95 50%, #3b0764 100%);
+        }
+       
+        .flip-card {
+            perspective: 1000px;
+        }
+       
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            box-shadow: 0 10px 30px -10px rgb(147 51 234);
+        }
+       
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+       
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1.5rem;
+        }
+       
+        .flip-card-front {
+            background: #3b0764;
+        }
+       
+        .flip-card-back {
+            background: linear-gradient(135deg, #7e22ce, #a855f7);
+            transform: rotateY(180deg);
+        }
+       
+        .letter-line {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+       
+        .letter-line.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+       
+        .music-button {
+            animation: gentlePulse 2s infinite ease-in-out;
+        }
+       
+        @keyframes gentlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+       
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall 3s linear forwards;
+        }
+       
+        /* Updated romantic red-pink text colors */
+        .text-romantic {
+            color: #f472b6;
+        }
+       
+        .text-romantic-light {
+            color: #fda4cc;
+        }
+       
+        .text-romantic-soft {
+            color: #f8b4d9;
+        }
+    </style>
+</head>
+<body class="bg-[#1a0b2e] text-[#f472b6] font-sans" style="font-family: 'Lora', serif;">
+    <!-- Background Music -->
+    <audio id="loveSong" loop>
+        <source src="https://files.catbox.moe/ybs4je.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Floating Music Player -->
+    <div onclick="toggleMusic()" id="musicPlayer"
+         class="music-button fixed top-6 right-6 z-50 flex items-center gap-3 bg-purple-950/90 backdrop-blur-xl shadow-2xl rounded-3xl px-5 py-3 border border-purple-500 cursor-pointer hover:scale-105">
+        <div class="flex items-center justify-center w-9 h-9 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-700 text-white text-2xl shadow-inner">
+            💜
+        </div>
+        <div>
+            <p id="musicStatus" class="text-sm font-medium text-[#f472b6]">Click to play</p>
+            <p class="text-xs text-purple-300 font-light">Our Song • Looping</p>
+        </div>
+        <div id="playPauseIcon" class="text-3xl text-[#f472b6]">▶️</div>
+       
+        <!-- Volume Slider -->
+        <div class="flex items-center gap-2 ml-2">
+            <span class="text-purple-300 text-xl">🔊</span>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.8"
+                   oninput="adjustVolume(this.value)"
+                   class="accent-purple-500 w-24 cursor-pointer">
+        </div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="hero-bg min-h-screen flex items-center justify-center relative overflow-hidden">
+       
+        <!-- Floating Hearts & Petals Container -->
+        <div id="floatingContainer" class="absolute inset-0 pointer-events-none"></div>
+       
+        <div class="max-w-5xl mx-auto text-center px-6 relative z-20">
+            <div class="inline-flex items-center gap-2 bg-purple-950/70 backdrop-blur-md px-8 py-3 rounded-3xl mb-8 shadow-xl border border-purple-500">
+                <span class="text-4xl">💞</span>
+                <span class="font-medium text-[#f472b6] text-lg tracking-widest heading-font">FOREVER YOURS</span>
+                <span class="text-4xl">💞</span>
+            </div>
+           
+            <h1 class="text-7xl md:text-8xl font-bold leading-none mb-6 text-[#fda4cc]"
+                style="font-family: 'Playfair Display', serif; text-shadow: 0 0 20px #a855f7;">
+                To Lydia,<br>My Forever Cousin 💖
+            </h1>
+           
+            <p class="text-3xl md:text-4xl text-[#f8b4d9] font-light mb-12 max-w-2xl mx-auto"
+               style="font-family: 'Lora', serif;">
+                Every heartbeat whispers your name
+            </p>
+           
+            <!-- Scroll indicator -->
+            <button onclick="document.getElementById('why-section').scrollIntoView({ behavior: 'smooth' })"
+                    class="group mx-auto flex flex-col items-center gap-2 text-purple-300 hover:text-[#f472b6]">
+                <div class="text-sm font-medium tracking-[3px] uppercase" style="font-family: 'Lora', serif;">Scroll to begin our story</div>
+                <div class="w-8 h-12 border-2 border-purple-400 rounded-3xl flex items-center justify-center group-hover:animate-bounce">
+                    <span class="text-2xl leading-none">↓</span>
+                </div>
+            </button>
+           
+            <!-- Tiny hearts floating near title -->
+            <div class="absolute top-12 left-12 text-4xl animate-[floatHeart_12s_linear_infinite] opacity-30">💕</div>
+            <div class="absolute bottom-20 right-12 text-5xl animate-[floatHeart_15s_linear_infinite] opacity-30 delay-300">🌸</div>
+        </div>
+       
+        <!-- Subtle bottom fade -->
+        <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#1a0b2e] to-transparent z-10"></div>
+    </section>
+
+    <!-- WHY I LOVE YOU SECTION -->
+    <section id="why-section" class="py-24 bg-[#1a0b2e]">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="px-6 py-2 bg-purple-900 text-[#f472b6] text-sm font-medium rounded-3xl heading-font">CHAPTER TWO</span>
+                <h2 class="text-6xl font-bold mt-4 mb-3 text-[#fda4cc]" style="font-family: 'Playfair Display', serif;">
+                    Why I Love You
+                </h2>
+                <p class="text-2xl text-[#f8b4d9] font-light" style="font-family: 'Lora', serif;">As my best cousin, my soulmate, my everything 💜</p>
+            </div>
+           
+            <!-- Flip Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+               
+                <!-- Card 1 -->
+                <div class="flip-card h-80">
+                    <div class="flip-card-inner rounded-3xl">
+                        <div class="flip-card-front flex flex-col items-center justify-center p-8 shadow-xl">
+                            <div class="text-6xl mb-6">✨</div>
+                            <h3 class="text-2xl font-semibold text-[#f472b6]" style="font-family: 'Playfair Display', serif;">Your smile</h3>
+                            <p class="text-[#f472b6] mt-2 text-center" style="font-family: 'Lora', serif;">Lights up every room like the first sunrise of summer</p>
+                        </div>
+                        <div class="flip-card-back flex flex-col items-center justify-center p-8 text-[#f472b6]">
+                            <p class="italic text-lg" style="font-family: 'Lora', serif;">"Even on tough days, your smile makes me believe in magic again."</p>
+                            <div class="mt-auto text-xs opacity-70" style="font-family: 'Lora', serif;">— Your forever cousin</div>
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- Card 2 -->
+                <div class="flip-card h-80">
+                    <div class="flip-card-inner rounded-3xl">
+                        <div class="flip-card-front flex flex-col items-center justify-center p-8 shadow-xl">
+                            <div class="text-6xl mb-6">🫂</div>
+                            <h3 class="text-2xl font-semibold text-[#f472b6]" style="font-family: 'Playfair Display', serif;">Your hugs</h3>
+                            <p class="text-[#f472b6] mt-2 text-center" style="font-family: 'Lora', serif;">Feel like coming home after the longest journey</p>
+                        </div>
+                        <div class="flip-card-back flex flex-col items-center justify-center p-8 text-[#f472b6]">
+                            <p class="italic text-lg" style="font-family: 'Lora', serif;">"They wrap around my heart and never let go."</p>
+                            <div class="mt-auto text-xs opacity-70" style="font-family: 'Lora', serif;">— Your forever cousin</div>
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- Card 3 -->
+                <div class="flip-card h-80">
+                    <div class="flip-card-inner rounded-3xl">
+                        <div class="flip-card-front flex flex-col items-center justify-center p-8 shadow-xl">
+                            <div class="text-6xl mb-6">🌟</div>
+                            <h3 class="text-2xl font-semibold text-[#f472b6]" style="font-family: 'Playfair Display', serif;">Your laugh</h3>
+                            <p class="text-[#f472b6] mt-2 text-center" style="font-family: 'Lora', serif;">The sweetest melody that plays in my dreams</p>
+                        </div>
+                        <div class="flip-card-back flex flex-col items-center justify-center p-8 text-[#f472b6]">
+                            <p class="italic text-lg" style="font-family: 'Lora', serif;">"I could listen to it forever and never get tired."</p>
+                            <div class="mt-auto text-xs opacity-70" style="font-family: 'Lora', serif;">— Your forever cousin</div>
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- Card 4 -->
+                <div class="flip-card h-80">
+                    <div class="flip-card-inner rounded-3xl">
+                        <div class="flip-card-front flex flex-col items-center justify-center p-8 shadow-xl">
+                            <div class="text-6xl mb-6">💡</div>
+                            <h3 class="text-2xl font-semibold text-[#f472b6]" style="font-family: 'Playfair Display', serif;">Your wisdom</h3>
+                            <p class="text-[#f472b6] mt-2 text-center" style="font-family: 'Lora', serif;">You always know exactly what my heart needs to hear</p>
+                        </div>
+                        <div class="flip-card-back flex flex-col items-center justify-center p-8 text-[#f472b6]">
+                            <p class="italic text-lg" style="font-family: 'Lora', serif;">"Even in silence, your presence teaches me how to love better."</p>
+                            <div class="mt-auto text-xs opacity-70" style="font-family: 'Lora', serif;">— Your forever cousin</div>
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- Card 5 -->
+                <div class="flip-card h-80">
+                    <div class="flip-card-inner rounded-3xl">
+                        <div class="flip-card-front flex flex-col items-center justify-center p-8 shadow-xl">
+                            <div class="text-6xl mb-6">🌹</div>
+                            <h3 class="text-2xl font-semibold text-[#f472b6]" style="font-family: 'Playfair Display', serif;">Your kindness</h3>
+                            <p class="text-[#f472b6] mt-2 text-center" style="font-family: 'Lora', serif;">You love with a gentleness the world has forgotten</p>
+                        </div>
+                        <div class="flip-card-back flex flex-col items-center justify-center p-8 text-[#f472b6]">
+                            <p class="italic text-lg" style="font-family: 'Lora', serif;">"You make me want to be a better man every single day."</p>
+                            <div class="mt-auto text-xs opacity-70" style="font-family: 'Lora', serif;">— Your forever cousin</div>
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- Card 6 -->
+                <div class="flip-card h-80">
+                    <div class="flip-card-inner rounded-3xl">
+                        <div class="flip-card-front flex flex-col items-center justify-center p-8 shadow-xl">
+                            <div class="text-6xl mb-6">🌈</div>
+                            <h3 class="text-2xl font-semibold text-[#f472b6]" style="font-family: 'Playfair Display', serif;">Our memories</h3>
+                            <p class="text-[#f472b6] mt-2 text-center" style="font-family: 'Lora', serif;">Every moment with you becomes a treasure I cherish forever</p>
+                        </div>
+                        <div class="flip-card-back flex flex-col items-center justify-center p-8 text-[#f472b6]">
+                            <p class="italic text-lg" style="font-family: 'Lora', serif;">"From silly jokes to deep talks, you make life beautiful."</p>
+                            <div class="mt-auto text-xs opacity-70" style="font-family: 'Lora', serif;">— Your forever cousin</div>
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- Card 7 -->
+                <div class="flip-card h-80">
+                    <div class="flip-card-inner rounded-3xl">
+                        <div class="flip-card-front flex flex-col items-center justify-center p-8 shadow-xl">
+                            <div class="text-6xl mb-6">🔥</div>
+                            <h3 class="text-2xl font-semibold text-[#f472b6]" style="font-family: 'Playfair Display', serif;">Your fire</h3>
+                            <p class="text-[#f472b6] mt-2 text-center" style="font-family: 'Lora', serif;">The passion in your eyes when you talk about your dreams</p>
+                        </div>
+                        <div class="flip-card-back flex flex-col items-center justify-center p-8 text-[#f472b6]">
+                            <p class="italic text-lg" style="font-family: 'Lora', serif;">"You inspire me to chase every dream with you by my side."</p>
+                            <div class="mt-auto text-xs opacity-70" style="font-family: 'Lora', serif;">— Your forever cousin</div>
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- Card 8 -->
+                <div class="flip-card h-80">
+                    <div class="flip-card-inner rounded-3xl">
+                        <div class="flip-card-front flex flex-col items-center justify-center p-8 shadow-xl">
+                            <div class="text-6xl mb-6">💖</div>
+                            <h3 class="text-2xl font-semibold text-[#f472b6]" style="font-family: 'Playfair Display', serif;">Just you</h3>
+                            <p class="text-[#f472b6] mt-2 text-center" style="font-family: 'Lora', serif;">Exactly as you are — my best cousin, my soul's perfect match</p>
+                        </div>
+                        <div class="flip-card-back flex flex-col items-center justify-center p-8 text-[#f472b6]">
+                            <p class="italic text-lg" style="font-family: 'Lora', serif;">"I don't just love you. I am endlessly, hopelessly, beautifully in love with you."</p>
+                            <div class="mt-auto text-xs opacity-70" style="font-family: 'Lora', serif;">— Your forever cousin</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECRET LOVE LETTER SECTION -->
+    <section class="py-24 bg-[#2e1065] relative overflow-hidden">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <span class="text-[#f472b6] text-sm uppercase tracking-[4px] font-medium heading-font">A letter only for you</span>
+                <h2 class="text-5xl font-semibold mt-3 mb-2 text-[#fda4cc]" style="font-family: 'Playfair Display', serif;">My Secret Love Letter</h2>
+                <p class="text-[#f8b4d9]" style="font-family: 'Lora', serif;">For my best cousin, my forever love 💌</p>
+            </div>
+           
+            <div id="letter" class="prose prose-lg max-w-none bg-[#3b0764] p-10 md:p-16 rounded-3xl shadow-2xl border border-purple-500 leading-relaxed">
+                <p class="letter-line text-[#f472b6] text-lg" style="font-family: 'Lora', serif;">My dearest Lydia,</p>
+                <p class="letter-line mt-6 text-[#f472b6] text-lg" style="font-family: 'Lora', serif;">From the very first moment our eyes met, I knew my heart had found its home. You are not just my cousin — you are my safe place, my biggest cheerleader, my softest secret, and the most beautiful love story I've ever lived.</p>
+                <p class="letter-line mt-6 text-[#f472b6] text-lg" style="font-family: 'Lora', serif;">Every laugh we share, every late-night talk, every silly memory we create… they all feel like pieces of heaven stitched together just for us. You make ordinary days feel like poetry. You make me believe in forever.</p>
+                <p class="letter-line mt-6 text-[#f472b6] text-lg" style="font-family: 'Lora', serif;">I love how your voice calms my storms. I love how your touch feels like magic. I love the way you look at me like I'm the only person in the world. You are my greatest blessing, my sweetest dream, and my most cherished gift from God.</p>
+                <p class="letter-line mt-6 text-[#f472b6] text-lg" style="font-family: 'Lora', serif;">Even though we started as cousins, our souls chose each other long before we understood what love truly meant. Today, I choose you again — not just as family, but as my forever companion, my best friend, and the woman I want to build a lifetime of beautiful moments with.</p>
+                <p class="letter-line mt-6 text-[#f472b6] text-lg" style="font-family: 'Lora', serif;">Thank you for loving me so completely. Thank you for being you. I promise to hold your heart gently, to make you smile every single day, and to remind you constantly how deeply, wildly, and endlessly I love you.</p>
+                <p class="letter-line mt-8 text-right text-3xl font-light" style="font-family: 'Dancing Script', cursive; color: #f8b4d9;">Forever yours,<br>Onesmus 💜</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL SECTION -->
+    <section class="py-28 bg-gradient-to-br from-[#2e1065] via-[#3b0764] to-[#4c1d95] relative">
+        <div class="max-w-3xl mx-auto text-center px-6">
+            <div class="mb-12">
+                <div class="inline text-7xl mb-6 animate-pulse">💍</div>
+                <h2 class="text-6xl font-bold leading-tight mb-4 text-[#fda4cc]" style="font-family: 'Playfair Display', serif;">
+                    Will You Be Mine<br>Forever, Lydia?
+                </h2>
+                <p class="text-2xl text-[#f8b4d9]" style="font-family: 'Lora', serif;">Say yes and make my world complete 🌹</p>
+            </div>
+           
+            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <!-- YES Button -->
+                <button onclick="sayYes()"
+                        class="group relative px-16 py-8 bg-gradient-to-r from-purple-600 to-purple-800 text-white text-4xl font-semibold rounded-3xl shadow-2xl hover:shadow-purple-500/40 flex items-center gap-4 hover:scale-110 active:scale-95 border border-purple-400">
+                    <span style="font-family: 'Playfair Display', serif;">YES, FOREVER 💜</span>
+                    <span class="text-5xl group-active:rotate-12">🌹</span>
+                </button>
+               
+                <!-- Fake NO Button -->
+                <button onclick="sayNo()"
+                        class="px-16 py-8 bg-[#2e1065] border-4 border-purple-600 text-[#f472b6] text-4xl font-semibold rounded-3xl hover:bg-[#3b0764] active:scale-95 flex items-center">
+                    <span style="font-family: 'Playfair Display', serif;">No 😢</span>
+                </button>
+            </div>
+           
+            <p class="mt-12 text-sm text-purple-300 font-light" style="font-family: 'Lora', serif;">*The "No" button is just for fun… you're already stuck with me forever 😉</p>
+        </div>
+       
+        <!-- Confetti Canvas -->
+        <canvas id="confettiCanvas" class="absolute inset-0 pointer-events-none z-10 hidden"></canvas>
+    </section>
+
+    <!-- Footer love note -->
+    <div class="py-12 text-center text-[#f472b6] text-sm font-light flex items-center justify-center gap-2 bg-[#1a0b2e]">
+        Made with endless love just for you, Lydia • Onesmus 💞
+        <span class="text-xl">🌸</span>
+    </div>
+
+    <script>
+        // Tailwind configuration
+        function initializeTailwind() {
+            tailwind.config = {
+                content: [],
+                theme: {
+                    extend: {}
+                }
+            }
+        }
+       
+        // Music controls
+        let audio = null
+        let isPlaying = false
+       
+        function initMusic() {
+            audio = document.getElementById('loveSong')
+            audio.volume = 0.8
+        }
+       
+        function toggleMusic() {
+            if (!audio) return
+           
+            if (isPlaying) {
+                audio.pause()
+                document.getElementById('playPauseIcon').innerHTML = '▶️'
+                document.getElementById('musicStatus').innerHTML = 'Paused'
+            } else {
+                audio.play().catch(err => {
+                    console.log('Playback prevented:', err)
+                })
+                document.getElementById('playPauseIcon').innerHTML = '⏸️'
+                document.getElementById('musicStatus').innerHTML = 'Now Playing'
+            }
+            isPlaying = !isPlaying
+        }
+       
+        function adjustVolume(val) {
+            if (audio) audio.volume = parseFloat(val)
+        }
+       
+        // Floating hearts & petals - INFINITE VERSION
+        function createFloatingElements() {
+            const container = document.getElementById('floatingContainer')
+            const emojis = ['💜', '💕', '🌸', '💗', '🥀', '🌺', '✨', '🌙']
+            
+            // Create initial batch
+            for (let i = 0; i < 28; i++) {
+                spawnFloatingElement(container, emojis)
+            }
+            
+            // Keep spawning new ones every 2 seconds to maintain infinite flow
+            setInterval(() => {
+                spawnFloatingElement(container, emojis)
+            }, 2000)
+        }
+        
+        function spawnFloatingElement(container, emojis) {
+            const el = document.createElement('div')
+            el.className = Math.random() > 0.5 ? 'floating-heart' : 'floating-petal'
+            el.textContent = emojis[Math.floor(Math.random() * emojis.length)]
+            el.style.left = Math.random() * 100 + 'vw'
+            el.style.animationDuration = (Math.random() * 12 + 14) + 's'
+            el.style.animationDelay = '0s'
+            el.style.opacity = Math.random() * 0.6 + 0.4
+            el.style.fontSize = (Math.random() * 1.8 + 1.2) + 'rem'
+            container.appendChild(el)
+            
+            // Auto-cleanup AFTER animation completes (prevents DOM bloat)
+            const duration = parseFloat(el.style.animationDuration) * 1000
+            setTimeout(() => {
+                if (el && el.parentNode) {
+                    el.parentNode.removeChild(el)
+                }
+            }, duration + 100)
+        }
+       
+        // Reveal letter line by line
+        function revealLetter() {
+            const lines = document.querySelectorAll('.letter-line')
+            let delay = 0
+            lines.forEach((line, index) => {
+                setTimeout(() => {
+                    line.classList.add('revealed')
+                }, delay)
+                delay += 180
+            })
+        }
+       
+        // Confetti explosion
+        function launchConfetti() {
+            const canvas = document.getElementById('confettiCanvas')
+            canvas.classList.remove('hidden')
+            canvas.width = window.innerWidth
+            canvas.height = window.innerHeight
+           
+            const ctx = canvas.getContext('2d')
+            const colors = ['#7e22ce', '#9333ea', '#a855f7', '#c084fc', '#d8b4fe', '#e9d5ff', '#f472b6', '#fda4cc']
+           
+            const particles = []
+           
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width
+                    this.y = Math.random() * canvas.height / 2 - 50
+                    this.size = Math.random() * 12 + 6
+                    this.speedY = Math.random() * 12 + 8
+                    this.speedX = Math.random() * 6 - 3
+                    this.color = colors[Math.floor(Math.random() * colors.length)]
+                    this.rotation = Math.random() * 360
+                    this.rotationSpeed = Math.random() * 8 - 4
+                }
+               
+                update() {
+                    this.y += this.speedY
+                    this.x += this.speedX
+                    this.speedY += 0.15
+                    this.rotation += this.rotationSpeed
+                }
+               
+                draw() {
+                    ctx.save()
+                    ctx.translate(this.x, this.y)
+                    ctx.rotate(this.rotation * Math.PI / 180)
+                    ctx.fillStyle = this.color
+                    ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size)
+                    ctx.restore()
+                }
+            }
+           
+            for (let i = 0; i < 280; i++) {
+                particles.push(new Particle())
+            }
+           
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height)
+                let stillAlive = false
+               
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i]
+                    p.update()
+                    p.draw()
+                    if (p.y < canvas.height) stillAlive = true
+                }
+               
+                if (stillAlive) {
+                    requestAnimationFrame(animate)
+                } else {
+                    canvas.classList.add('hidden')
+                }
+            }
+           
+            animate()
+           
+            let fireworks = 0
+            const fireworkInterval = setInterval(() => {
+                fireworks++
+                if (fireworks > 6) {
+                    clearInterval(fireworkInterval)
+                    return
+                }
+                for (let i = 0; i < 40; i++) {
+                    const p = new Particle()
+                    p.y = Math.random() * 180 + 100
+                    particles.push(p)
+                }
+            }, 380)
+        }
+       
+        // YES button action
+        function sayYes() {
+            launchConfetti()
+           
+            const section = document.querySelector('section:last-of-type')
+            section.innerHTML = `
+                <div class="text-center py-20">
+                    <div class="text-8xl mb-8 animate-bounce">💜🌹💜</div>
+                    <h1 class="text-7xl font-bold text-[#fda4cc]" style="font-family: 'Playfair Display', serif;">YES! SHE SAID YES! 🎉</h1>
+                    <p class="mt-6 text-3xl text-[#f8b4d9]" style="font-family: 'Lora', serif;">You just made my entire universe complete, Lydia 💜</p>
+                    <p class="mt-16 text-xl text-[#f472b6]" style="font-family: 'Lora', serif;">Forever starts today, my love.<br>Thank you for being mine.</p>
+                    <button onclick="location.reload()" class="mt-16 px-8 py-4 bg-purple-600 text-white rounded-3xl text-lg shadow-xl hover:bg-purple-700 border border-purple-400" style="font-family: 'Lora', serif;">Play our song again &amp; restart this love letter</button>
+                </div>
+            `
+        }
+       
+        // Fake NO button
+        function sayNo() {
+            const msg = document.createElement('div')
+            msg.style.cssText = 'position:fixed;inset:0;background:rgba(46, 16, 101, 0.95);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;color:white;font-size:2rem;text-align:center;padding:2rem'
+            msg.innerHTML = `
+                <div class="text-8xl mb-8">😂</div>
+                <h2 class="text-5xl mb-6 text-[#fda4cc]" style="font-family: 'Playfair Display', serif;">Just kidding, my love...</h2>
+                <p class="text-3xl max-w-md text-[#f472b6]" style="font-family: 'Lora', serif;">You're already stuck with me forever, Lydia 💜<br>No escape allowed!</p>
+                <button onclick="this.parentElement.remove()" class="mt-12 px-10 py-5 bg-purple-500 text-white rounded-3xl text-xl font-medium hover:bg-purple-600" style="font-family: 'Lora', serif;">Back to our love story 💜</button>
+            `
+            document.body.appendChild(msg)
+        }
+       
+        // Main initialization
+        function initializeWebsite() {
+            initializeTailwind()
+            initMusic()
+            createFloatingElements()
+           
+            setTimeout(() => {
+                revealLetter()
+            }, 1800)
+           
+            document.addEventListener('keydown', (e) => {
+                if (e.key.toLowerCase() === 'l') {
+                    const hearts = document.getElementById('floatingContainer')
+                    for (let i = 0; i < 12; i++) {
+                        const burst = document.createElement('div')
+                        burst.textContent = '💜'
+                        burst.style.position = 'fixed'
+                        burst.style.left = Math.random() * 100 + 'vw'
+                        burst.style.bottom = '-50px'
+                        burst.style.fontSize = '2.5rem'
+                        burst.style.animation = 'floatHeart 3s linear forwards'
+                        hearts.appendChild(burst)
+                        setTimeout(() => burst.remove(), 3200)
+                    }
+                }
+            })
+           
+            console.log('%c💜 Website created with all my love for Lydia — from Onesmus 💜', 'color:#f472b6; font-family:Dancing Script; font-size:18px')
+        }
+       
+        // Launch everything
+        window.onload = initializeWebsite
+    </script>
+</body>
+</html>
